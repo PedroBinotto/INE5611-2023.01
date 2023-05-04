@@ -1,27 +1,35 @@
-# Compiler
-CC = g++
+# Define compiler and compiler flags
+CXX := g++
+CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic
 
-# Compiler flags
-CFLAGS = -Wall -Wextra -Wpedantic
+# Define source, object, and binary directories
+SRCDIR := src
+OBJDIR := obj
+BINDIR := bin
 
-# Directories
-SRCDIR = src
-OBJDIR = obj
-BINDIR = bin
+# Define source and object files
+SRCS := $(wildcard $(SRCDIR)/*.cpp)
+OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-# Files
-SRC = $(wildcard $(SRCDIR)/*.cpp)
-OBJ = $(SRC:$(SRCDIR)/%.cpp=$(OBJDIR)/%.o)
-EXEC = $(BINDIR)/program
+# Define the binary file
+TARGET := $(BINDIR)/game
 
-# Targets
-all: $(EXEC)
+# Define phony targets
+.PHONY: all clean
 
-$(EXEC): $(OBJ)
-	$(CC) $(CFLAGS) $^ -o $@
+# Default target
+all: $(TARGET)
 
+# Compile object files
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
-	$(CC) $(CFLAGS) -c $< -o $@
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 
+# Link object files to create the binary file
+$(TARGET): $(OBJS)
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) $^ -o $@
+
+# Clean up object and binary files
 clean:
-	rm -f $(OBJDIR)/*.o $(EXEC)
+	rm -rf $(OBJDIR) $(BINDIR)
