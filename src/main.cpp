@@ -1,31 +1,40 @@
 #include <chrono>
-#include <iostream>
+#include <functional>
 #include <unistd.h>
 
 #include "Game.hpp"
 
 using namespace std;
 
+void mloop(function<void(void)> op);
+
 const int MOD = 1000;
+const int FR = 33;
 
 int main(void) {
   Game game = Game();
 
+  mloop([&game]() {
+    game.update();
+    game.draw();
+  });
+
+  return 0;
+}
+
+void mloop(function<void(void)> op) {
   auto now = chrono::system_clock::now();
   auto lastFrame = chrono::system_clock::now();
 
   while (true) {
     now = chrono::system_clock::now();
-    int delta = (now - lastFrame).count() / MOD;
+    const int delta = (now - lastFrame).count() / MOD;
     lastFrame = now;
 
-    if (delta < (33 * MOD)) {
-      usleep((33 * MOD) - delta);
+    if (delta < (FR * MOD)) {
+      usleep((FR * MOD) - delta);
     }
 
-    game.update();
-    game.draw();
+    op();
   }
-
-  return 0;
 }
