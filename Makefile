@@ -6,6 +6,7 @@ CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic -lncurses
 SRCDIR := src
 OBJDIR := obj
 BINDIR := bin
+LOGDIR := log
 
 # Define source and object files
 SRCS := $(wildcard $(SRCDIR)/*.cpp)
@@ -32,4 +33,4 @@ $(TARGET): $(OBJS)
 
 # Clean up object and binary files
 clean:
-	rm -rf $(OBJDIR) $(BINDIR)
+	rm -rf $(OBJDIR) $(BINDIR) $(LOGDIR)
