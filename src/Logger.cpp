@@ -1,8 +1,3 @@
-#include <chrono>
-#include <fstream>
-#include <iostream>
-#include <string>
-
 #include "Logger.hpp"
 #include "utils.hpp"
 
@@ -12,10 +7,7 @@ Logger *Logger::pinstance_{nullptr};
 std::mutex Logger::mutex_;
 
 Logger::Logger(void) {
-  auto epoch =
-      to_string(std::chrono::duration_cast<std::chrono::seconds>(
-                    std::chrono::system_clock::now().time_since_epoch())
-                    .count());
+  auto epoch = utils::currentUnixTime();
   utils::create_directory(LOGDIR);
   string file = LOGDIR + epoch + "_log.txt";
   logfile = std::ofstream(file);

@@ -13,7 +13,7 @@ const int FR = 33;
 
 int main(void) {
   Game game = Game();
-  mloop([&game]() { game.update(); });
+  mloop([&game]() { game.draw(); });
 
   return 0;
 }

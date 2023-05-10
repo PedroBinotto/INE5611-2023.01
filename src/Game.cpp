@@ -1,25 +1,19 @@
-#include <exception>
-#include <iostream>
-#include <math.h>
-#include <ncurses.h>
-#include <string>
-
 #include "Game.hpp"
 
 using namespace std;
 
-Game::Game(void) : state(0), interface(InterfaceClient()) {
-  const pair<int, int> termDimensions = interface.start();
+Game::Game(void) : state(new utils::GameState), interface(InterfaceClient()) {
+  interface.start();
+
+  pair<int, int> d = interface.getDimensions();
+
+  utils::log("term x dimension: " + to_string(d.first));
+  utils::log("term y dimension: " + to_string(d.second));
 }
 
-Game::~Game(void) { interface.stop(); }
-
-void Game::draw() {
-  interface.setBoard(state);
-  interface.ref();
+Game::~Game(void) {
+  interface.stop();
+  delete state;
 }
 
-void Game::update() {
-  state++;
-  draw();
-}
+void Game::draw() { interface.update(*state); }

@@ -1,9 +1,11 @@
-#ifndef __LOGGING_H__
-#define __LOGGING_H__
+#ifndef __LOGGER_H__
+#define __LOGGER_H__
 
+#include <chrono>
 #include <fstream>
 #include <iostream>
 #include <mutex>
+#include <string>
 
 using namespace std;
 
