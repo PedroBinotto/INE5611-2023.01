@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "InterfaceClient.hpp"
 #include "utils.hpp"
 
@@ -22,7 +24,7 @@ void InterfaceClient::start(void) {
   }
 }
 
-void InterfaceClient::update(utils::GameState &state) {
+void InterfaceClient::update(utils::GameState *&state) {
   clear();
   draw(state);
   refresh();
@@ -61,16 +63,26 @@ vector<string> InterfaceClient::getSprite(int e) {
 
 void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
   const vector<string> sprite = getSprite(entity);
+  utils::log("pos: " + to_string(pos.first) + ", " + to_string(pos.second));
+  utils::log("ent: " + to_string(entity));
   for (int i = 0; i < sprite.size(); i++) {
     mvprintw((pos.second * SCALE) + i, pos.first * SCALE, sprite[i].c_str());
   }
 }
 
-void InterfaceClient::draw(utils::GameState &state) {
-  for (int i = 0; i < state.boardState.size(); i++) {
-    for (int j = 0; j < state.boardState[i].size(); j++) {
+void InterfaceClient::draw(utils::GameState *&state) {
+
+  const void *address = static_cast<const void *>(state);
+  std::stringstream ss;
+  ss << address;
+  std::string name = ss.str();
+  utils::log("IC gamestate memory address: " + name);
+  utils::log_board_state(state->boardState);
+
+  for (int i = 0; i < state->boardState.size(); i++) {
+    for (int j = 0; j < state->boardState[i].size(); j++) {
       auto coords = virtualPositionToTerminalCoordinates({j, i});
-      printSprite(coords, state.boardState[i][j]);
+      printSprite(coords, state->boardState[i][j]);
     }
   }
 }

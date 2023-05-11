@@ -7,6 +7,7 @@
 #include <ncurses.h>
 #include <pthread.h>
 #include <string>
+#include <unistd.h>
 #include <utility>
 #include <vector>
 
@@ -16,6 +17,8 @@
 class Game {
   utils::GameState *state;
   InterfaceClient interface;
+
+  void startGameThreads(void);
 
 public:
   Game(void);

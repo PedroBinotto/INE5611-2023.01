@@ -1,6 +1,6 @@
 # Define compiler and compiler flags
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -pedantic -lncurses
+CXXFLAGS := -std=c++11 -Wall -Wextra -g -pedantic -lncurses -pthread
 
 # Define source, object, and binary directories
 SRCDIR := src

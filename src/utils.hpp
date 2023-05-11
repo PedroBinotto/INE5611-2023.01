@@ -13,6 +13,7 @@ void log(const std::string &msg);
 std::string currentUnixTime(void);
 typedef std::vector<std::vector<int>> Board;
 enum EntityEnum { PLAYER = 1, ENEMY = 2, MISSILE = 3 };
+void log_board_state(utils::Board &board);
 struct GameState {
   utils::Board boardState;
   int playerPosition;
