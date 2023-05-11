@@ -1,26 +1,9 @@
 #include "InterfaceClient.hpp"
+#include "utils.hpp"
 
 using namespace std;
 
-string getSprite(int e) {
-  switch (e) {
-  case utils::ENEMY:
-    return "\n/WwW\\\n"
-           " V V\n";
-    break;
-  case utils::PLAYER:
-    return "\n^\n"
-           "^\n";
-    break;
-  case utils::MISSILE:
-    return "\n0\n";
-    break;
-  default:
-    return "";
-  }
-}
-
-InterfaceClient::InterfaceClient(void) {}
+InterfaceClient::InterfaceClient(void) : SCALE(3), COLOR(has_colors()) {}
 
 void InterfaceClient::start(void) {
   initscr();
@@ -29,12 +12,14 @@ void InterfaceClient::start(void) {
   noecho();
   nodelay(stdscr, true);
   keypad(stdscr, TRUE);
-  start_color();
   use_default_colors();
-  init_pair(1, COLOR_GREEN, COLOR_GREEN);
-  init_pair(2, COLOR_GREEN, COLOR_RED);
-  utils::log(getSprite(utils::ENEMY));
-  utils::log(getSprite(utils::ENEMY));
+  const pair<int, int> d = getDimensions();
+  playableArea = {(d.first / (SCALE * SCALE)), (d.second / (SCALE * SCALE))};
+  if (COLOR) {
+    start_color();
+    init_pair(1, COLOR_GREEN, COLOR_BLACK);
+    init_pair(2, COLOR_RED, COLOR_BLACK);
+  }
 }
 
 void InterfaceClient::update(utils::GameState &state) {
@@ -44,24 +29,48 @@ void InterfaceClient::update(utils::GameState &state) {
 }
 
 std::pair<int, int> InterfaceClient::getDimensions(void) {
-  int maxX, maxY;
-  getmaxyx(stdscr, maxY, maxX);
+  int x, y;
+  getmaxyx(stdscr, y, x);
 
-  return {maxY, maxX};
+  return {x, y};
 }
 
-std::pair<int, int>
-InterfaceClient::virtualPositionToCoordinates(std::pair<int, int> pos,
-                                              bool reverse = false) {
-  return {1, 2};
+int InterfaceClient::getScaleFactor(void) { return SCALE; }
+
+std::pair<int, int> InterfaceClient::virtualPositionToTerminalCoordinates(std::pair<int, int> pos) {
+  return {pos.first * SCALE, pos.second * SCALE};
+}
+
+pair<int, int> InterfaceClient::getPlayableArea(void) { return playableArea; }
+
+vector<string> InterfaceClient::getSprite(int e) {
+  switch (e) {
+  case utils::ENEMY:
+    return {"/W\\", "V-V", "   "};
+    break;
+  case utils::PLAYER:
+    return {" ^ ", " ^ ", " ^ "};
+    break;
+  case utils::MISSILE:
+    return {"   ", " 0 ", "   "};
+    break;
+  default:
+    return {"   ", "   ", "   "};
+  }
+}
+
+void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
+  const vector<string> sprite = getSprite(entity);
+  for (int i = 0; i < sprite.size(); i++) {
+    mvprintw((pos.second * SCALE) + i, pos.first * SCALE, sprite[i].c_str());
+  }
 }
 
 void InterfaceClient::draw(utils::GameState &state) {
   for (int i = 0; i < state.boardState.size(); i++) {
     for (int j = 0; j < state.boardState[i].size(); j++) {
-      auto coords = virtualPositionToCoordinates({i, j});
-      mvprintw(coords.second, coords.first,
-               getSprite(state.boardState[i][j]).c_str());
+      auto coords = virtualPositionToTerminalCoordinates({j, i});
+      printSprite(coords, state.boardState[i][j]);
     }
   }
 }

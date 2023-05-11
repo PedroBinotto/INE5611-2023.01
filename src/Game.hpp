@@ -5,6 +5,7 @@
 #include <iostream>
 #include <math.h>
 #include <ncurses.h>
+#include <pthread.h>
 #include <string>
 #include <utility>
 #include <vector>

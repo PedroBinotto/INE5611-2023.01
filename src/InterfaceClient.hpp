@@ -11,9 +11,14 @@
 #include "utils.hpp"
 
 class InterfaceClient {
+  const int SCALE;
+  bool COLOR;
+  std::pair<int, int> playableArea;
+
   void draw(utils::GameState &state);
-  std::pair<int, int> virtualPositionToCoordinates(std::pair<int, int> pos,
-                                                   bool reverse);
+  void printSprite(std::pair<int, int> pos, int entity);
+  std::vector<std::string> getSprite(int e);
+  std::pair<int, int> virtualPositionToTerminalCoordinates(std::pair<int, int> pos);
 
 public:
   InterfaceClient(void);
@@ -23,6 +28,8 @@ public:
   void update(utils::GameState &state);
 
   std::pair<int, int> getDimensions(void);
+  int getScaleFactor(void);
+  std::pair<int, int> getPlayableArea(void);
 };
 
 #endif

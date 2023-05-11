@@ -17,6 +17,8 @@ struct GameState {
   utils::Board boardState;
   int playerPosition;
 };
+const int MIN_X = 212;
+const int MIN_Y = 42;
 } // namespace utils
 
 #endif
