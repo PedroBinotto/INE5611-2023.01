@@ -14,17 +14,13 @@ void log_startup_inf(utils::Board &board, pair<int, int> termDimensions, pair<in
 }
 
 void *testThread(void *arg) {
-  const void *address = static_cast<const void *>(arg);
-  std::stringstream ss;
-  ss << address;
-  std::string name = ss.str();
+  utils::GameState *state = (utils::GameState *)arg;
+  utils::Board &board = state->boardState;
 
-  utils::Board board = *(utils::Board *)arg;
   for (int i = 0; i < board.size(); i++) {
     for (int j = 0; j < board[i].size(); j++) {
+      auto a = board[i][j];
       board[i][j] = utils::ENEMY;
-      utils::log("GAME gamestate memory address: " + name);
-      utils::log_board_state(board);
       sleep(3);
     }
   }
@@ -54,5 +50,5 @@ void Game::draw() { interface.update(state); }
 
 void Game::startGameThreads(void) {
   pthread_t thread;
-  pthread_create(&thread, NULL, testThread, &state->boardState);
+  pthread_create(&thread, NULL, testThread, state);
 }
