@@ -16,7 +16,7 @@ void InterfaceClient::start(void) {
   keypad(stdscr, TRUE);
   use_default_colors();
   const pair<int, int> d = getDimensions();
-  playableArea = {(d.first / (SCALE * SCALE)), (d.second / (SCALE * SCALE))};
+  playableArea = {(d.first / (SCALE * SCALE)), (d.second / (SCALE * SCALE)) + 1};
   if (COLOR) {
     start_color();
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
@@ -24,7 +24,7 @@ void InterfaceClient::start(void) {
   }
 }
 
-void InterfaceClient::update(utils::GameState *&state) {
+void InterfaceClient::update(utils::GameState *state) {
   clear();
   draw(state);
   refresh();
@@ -47,13 +47,13 @@ pair<int, int> InterfaceClient::getPlayableArea(void) { return playableArea; }
 
 vector<string> InterfaceClient::getSprite(int e) {
   switch (e) {
-  case utils::ENEMY:
+  case utils::EntityEnum::ENEMY:
     return {"/W\\", "V-V", "   "};
     break;
-  case utils::PLAYER:
+  case utils::EntityEnum::PLAYER:
     return {" ^ ", " ^ ", " ^ "};
     break;
-  case utils::MISSILE:
+  case utils::EntityEnum::MISSILE:
     return {"   ", " 0 ", "   "};
     break;
   default:
@@ -63,14 +63,14 @@ vector<string> InterfaceClient::getSprite(int e) {
 
 void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
   const vector<string> sprite = getSprite(entity);
-  for (int i = 0; i < sprite.size(); i++) {
+  for (int i = 0; i < (int)sprite.size(); i++) {
     mvprintw((pos.second * SCALE) + i, pos.first * SCALE, sprite[i].c_str());
   }
 }
 
-void InterfaceClient::draw(utils::GameState *&state) {
-  for (int i = 0; i < state->boardState.size(); i++) {
-    for (int j = 0; j < state->boardState[i].size(); j++) {
+void InterfaceClient::draw(utils::GameState *state) {
+  for (int i = 0; i < (int)state->boardState.size(); i++) {
+    for (int j = 0; j < (int)state->boardState[i].size(); j++) {
       auto coords = virtualPositionToTerminalCoordinates({j, i});
       printSprite(coords, state->boardState[i][j]);
     }

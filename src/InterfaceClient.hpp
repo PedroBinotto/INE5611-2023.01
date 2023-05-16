@@ -14,7 +14,7 @@ class InterfaceClient {
   bool COLOR;
   std::pair<int, int> playableArea;
 
-  void draw(utils::GameState *&state);
+  void draw(utils::GameState *state);
   void printSprite(std::pair<int, int> pos, int entity);
   std::vector<std::string> getSprite(int e);
   std::pair<int, int> virtualPositionToTerminalCoordinates(std::pair<int, int> pos);
@@ -24,7 +24,7 @@ public:
 
   void start(void);
   void stop(void);
-  void update(utils::GameState *&state);
+  void update(utils::GameState *state);
 
   std::pair<int, int> getDimensions(void);
   int getScaleFactor(void);

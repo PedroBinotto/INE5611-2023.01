@@ -1,32 +1,8 @@
 #include <sstream>
 
 #include "Game.hpp"
-#include "utils.hpp"
 
 using namespace std;
-
-void log_startup_inf(utils::Board &board, pair<int, int> termDimensions, pair<int, int> playableArea) {
-  utils::log("term x dimension: " + to_string(termDimensions.first));
-  utils::log("to scale: " + to_string(playableArea.first));
-  utils::log("term y dimension: " + to_string(termDimensions.second));
-  utils::log("to scale: " + to_string(playableArea.second));
-  utils::log_board_state(board);
-}
-
-void *testThread(void *arg) {
-  utils::GameState *state = (utils::GameState *)arg;
-  utils::Board &board = state->boardState;
-
-  for (int i = 0; i < board.size(); i++) {
-    for (int j = 0; j < board[i].size(); j++) {
-      auto a = board[i][j];
-      board[i][j] = utils::ENEMY;
-      sleep(3);
-    }
-  }
-
-  return NULL;
-}
 
 Game::Game(void) : state(new utils::GameState), interface(InterfaceClient()) {
   interface.start();
@@ -36,9 +12,8 @@ Game::Game(void) : state(new utils::GameState), interface(InterfaceClient()) {
   const int y = a.second;
 
   state->boardState = std::vector<std::vector<int>>(y, std::vector<int>(x));
-  log_startup_inf(state->boardState, d, a);
+  utils::logStartupInf(state->boardState, d, a);
   startGameThreads();
-  // state->boardState[state->boardState.size() - 1][state->boardState[0].size() / 2] = utils::PLAYER;
 }
 
 Game::~Game(void) {
@@ -50,5 +25,6 @@ void Game::draw() { interface.update(state); }
 
 void Game::startGameThreads(void) {
   pthread_t thread;
-  pthread_create(&thread, NULL, testThread, state);
+  pthread_create(&thread, NULL, EntityThreadFunctions::player, state);
+  // TODO: create alien threads ...
 }

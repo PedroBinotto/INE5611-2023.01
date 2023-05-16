@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include "EntityThreadFunctions.hpp"
 #include "InterfaceClient.hpp"
 #include "utils.hpp"
 
