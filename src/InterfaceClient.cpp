@@ -1,7 +1,4 @@
-#include <sstream>
-
 #include "InterfaceClient.hpp"
-#include "utils.hpp"
 
 using namespace std;
 
@@ -24,7 +21,7 @@ void InterfaceClient::start(void) {
   }
 }
 
-void InterfaceClient::update(utils::GameState *state) {
+void InterfaceClient::update(utils::Types::GameState *state) {
   clear();
   draw(state);
   refresh();
@@ -47,13 +44,13 @@ pair<int, int> InterfaceClient::getPlayableArea(void) { return playableArea; }
 
 vector<string> InterfaceClient::getSprite(int e) {
   switch (e) {
-  case utils::EntityEnum::ENEMY:
+  case utils::Types::EntityEnum::ENEMY:
     return {"/W\\", "V-V", "   "};
     break;
-  case utils::EntityEnum::PLAYER:
+  case utils::Types::EntityEnum::PLAYER:
     return {" ^ ", " ^ ", " ^ "};
     break;
-  case utils::EntityEnum::MISSILE:
+  case utils::Types::EntityEnum::MISSILE:
     return {"   ", " 0 ", "   "};
     break;
   default:
@@ -68,7 +65,7 @@ void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
   }
 }
 
-void InterfaceClient::draw(utils::GameState *state) {
+void InterfaceClient::draw(utils::Types::GameState *state) {
   for (int i = 0; i < (int)state->boardState.size(); i++) {
     for (int j = 0; j < (int)state->boardState[i].size(); j++) {
       auto coords = virtualPositionToTerminalCoordinates({j, i});

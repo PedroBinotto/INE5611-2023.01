@@ -19,7 +19,7 @@ std::string currentUnixTime(void) {
 
 void log(const std::string &msg) { Logger::getInstance()->log("[" + currentUnixTime() + "] " + msg); }
 
-void logStartupInf(utils::Board &board, pair<int, int> termDimensions, pair<int, int> playableArea) {
+void logStartupInf(utils::Types::Board &board, pair<int, int> termDimensions, pair<int, int> playableArea) {
   utils::log("term x dimension: " + to_string(termDimensions.first));
   utils::log("to scale: " + to_string(playableArea.first));
   utils::log("term y dimension: " + to_string(termDimensions.second));
@@ -27,7 +27,7 @@ void logStartupInf(utils::Board &board, pair<int, int> termDimensions, pair<int,
   utils::logBoardState(board);
 }
 
-void logBoardState(utils::Board &board) {
+void logBoardState(utils::Types::Board &board) {
   for (int i = 0; i < (int)board.size(); i++) {
     string out = "[ ";
     for (int j = 0; j < (int)board[i].size(); j++) {

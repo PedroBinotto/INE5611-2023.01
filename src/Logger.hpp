@@ -7,6 +7,8 @@
 #include <mutex>
 #include <string>
 
+#include "utils.hpp"
+
 using namespace std;
 
 class Logger {

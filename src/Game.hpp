@@ -6,6 +6,7 @@
 #include <math.h>
 #include <ncurses.h>
 #include <pthread.h>
+#include <sstream>
 #include <string>
 #include <unistd.h>
 #include <utility>
@@ -16,7 +17,7 @@
 #include "utils.hpp"
 
 class Game {
-  utils::GameState *state;
+  utils::Types::GameState *state;
   InterfaceClient interface;
 
   void startGameThreads(void);

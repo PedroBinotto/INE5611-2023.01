@@ -1,18 +1,14 @@
 #include "EntityThreadFunctions.hpp"
-#include "utils.hpp"
-#include <cmath>
-
-const std::string LOGTAG = "[getch] ";
 
 namespace EntityThreadFunctions {
 namespace {
-void handleMissleLaunch(utils::GameState *state) {}
+void handleMissleLaunch(utils::Types::GameState *state) { utils::log(std::to_string(state->playerPosition)); }
 } // namespace
 
 void *player(void *arg) {
 
-  utils::GameState *state = (utils::GameState *)arg;
-  utils::Board &board = state->boardState;
+  utils::Types::GameState *state = (utils::Types::GameState *)arg;
+  utils::Types::Board &board = state->boardState;
   int &pos = state->playerPosition;
 
   const int INPUT_INTERVAL = 20000;
@@ -43,8 +39,18 @@ void *player(void *arg) {
       playerRow[pos] = 0;
       pos = newPos;
     }
-    playerRow[pos] = utils::EntityEnum::PLAYER;
+    playerRow[pos] = utils::Types::EntityEnum::PLAYER;
     usleep(INPUT_INTERVAL);
   }
+}
+
+void *alien(void *arg) {
+  utils::Types::AlienProps *props = (utils::Types::AlienProps *)arg;
+  utils::Types::GameState *state = props->state;
+  int id = props->id;
+  delete props;
+
+  utils::log("id " + std::to_string(id));
+  return NULL;
 }
 } // namespace EntityThreadFunctions

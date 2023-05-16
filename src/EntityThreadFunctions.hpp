@@ -1,3 +1,4 @@
+#include <cmath>
 #include <ncurses.h>
 #include <unistd.h>
 
