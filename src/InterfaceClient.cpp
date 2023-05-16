@@ -13,7 +13,7 @@ void InterfaceClient::start(void) {
   keypad(stdscr, TRUE);
   use_default_colors();
   const pair<int, int> d = getDimensions();
-  playableArea = {(d.first / (SCALE * SCALE)), (d.second / (SCALE * SCALE)) + 1};
+  playableArea = {(d.first / (SCALE)), (d.second / (SCALE))};
   if (COLOR) {
     start_color();
     init_pair(1, COLOR_GREEN, COLOR_BLACK);
@@ -61,7 +61,7 @@ vector<string> InterfaceClient::getSprite(int e) {
 void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
   const vector<string> sprite = getSprite(entity);
   for (int i = 0; i < (int)sprite.size(); i++) {
-    mvprintw((pos.second * SCALE) + i, pos.first * SCALE, sprite[i].c_str());
+    mvprintw(pos.second + i, pos.first, sprite[i].c_str());
   }
 }
 
