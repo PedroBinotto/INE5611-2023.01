@@ -36,11 +36,11 @@ void Game::startGameThreads(void) {
   pthread_create(&playerThread, NULL, EntityThreadFunctions::player, state);
 
   int cnt = 0;
-  const int rowSpan = (utils::ENEMIES_PER_ROW * 2) - 1;
+  const int rowSpan = (utils::ENEMIES_PER_ROW * utils::ENEMY_SPACING) - 1;
   const int initialPosRowPadding = (interface.getPlayableArea().first - rowSpan) / 2;
   for (int i = 0; i < utils::ENEMY_ROWS; i++) {
     for (int j = 0; j < utils::ENEMIES_PER_ROW; j++) {
-      const int horizontalPos = (j * 2) + initialPosRowPadding;
+      const int horizontalPos = (j * utils::ENEMY_SPACING) + initialPosRowPadding;
 
       state->aliens[cnt] = new utils::Types::Alien;
       utils::Types::Alien *alien = state->aliens[cnt];
@@ -48,7 +48,7 @@ void Game::startGameThreads(void) {
       alien->id = cnt;
       alien->pos = {i, horizontalPos};
       alien->alive = true;
-      state->boardState[i][horizontalPos + (i % 2)] = utils::Types::EntityEnum::ENEMY;
+      state->boardState[i][horizontalPos + (i % utils::ENEMY_SPACING)] = utils::Types::EntityEnum::ENEMY;
 
       utils::Types::AlienProps *props = new utils::Types::AlienProps;
       props->state = state;

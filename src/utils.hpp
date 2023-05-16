@@ -34,6 +34,7 @@ void logBoardState(Types::Board &board);
 
 const int ENEMY_ROWS = 2;
 const int ENEMIES_PER_ROW = 10;
+const int ENEMY_SPACING = 2;
 
 const int MIN_X = (ENEMIES_PER_ROW * 2) + 1;
 const int MIN_Y = 5;

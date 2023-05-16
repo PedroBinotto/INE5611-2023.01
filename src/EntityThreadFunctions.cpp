@@ -6,7 +6,6 @@ void handleMissleLaunch(utils::Types::GameState *state) { utils::log(std::to_str
 } // namespace
 
 void *player(void *arg) {
-
   utils::Types::GameState *state = (utils::Types::GameState *)arg;
   utils::Types::Board &board = state->boardState;
   int &pos = state->playerPosition;
