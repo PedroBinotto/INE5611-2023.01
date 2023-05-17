@@ -8,10 +8,19 @@
 using namespace std;
 using namespace utils;
 
+int getDifficultyLevel(void);
 void mloop(function<void(void)> op);
 
 int main(void) {
+  Game game = Game(getDifficultyLevel());
+  mloop([&game]() { game.draw(); });
+
+  return 0;
+}
+
+int getDifficultyLevel(void) {
   int d;
+
   std::cout << "Selecione o nível de dificuldade entre:" << std::endl;
   std::cout << "1 - Fácil" << std::endl;
   std::cout << "2 - Médio" << std::endl;
@@ -21,10 +30,8 @@ int main(void) {
     std::cout << "Nível de dificuldade deve ser entre 1 e 3" << std::endl;
     exit(1);
   }
-  Game game = Game(d);
-  mloop([&game]() { game.draw(); });
 
-  return 0;
+  return d;
 }
 
 void mloop(function<void(void)> op) {

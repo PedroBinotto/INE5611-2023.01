@@ -15,4 +15,6 @@ namespace EntityThreadFunctions {
   void *player(void *arg);
   void *missile(void *arg);
   void *alien(void *arg);
+  void *timer(void *arg);
+  void *missileGenerator(void *arg);
 } // namespace EntityThreadFunctions
