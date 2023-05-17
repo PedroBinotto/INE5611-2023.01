@@ -1,5 +1,7 @@
 #include "utils.hpp"
+
 #include "Logger.hpp"
+#include <semaphore.h>
 
 namespace utils {
 void create_directory(const std::string &path) {
@@ -31,7 +33,7 @@ void logBoardState(utils::Types::Board &board) {
   for (int i = 0; i < (int)board.size(); i++) {
     string out = "[ ";
     for (int j = 0; j < (int)board[i].size(); j++) {
-      out += to_string(board[i][j]) + " ";
+      out += to_string(board[i][j]->value) + " ";
     }
     out += "]";
     utils::log(out);

@@ -69,7 +69,7 @@ void InterfaceClient::draw(utils::Types::GameState *state) {
   for (int i = 0; i < (int)state->boardState.size(); i++) {
     for (int j = 0; j < (int)state->boardState[i].size(); j++) {
       auto coords = virtualPositionToTerminalCoordinates({j, i});
-      printSprite(coords, state->boardState[i][j]);
+      printSprite(coords, state->boardState[i][j]->value);
     }
   }
 }

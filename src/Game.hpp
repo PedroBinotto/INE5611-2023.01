@@ -20,6 +20,7 @@ class Game {
   utils::Types::GameState *state;
   InterfaceClient interface;
 
+  void constructGameStructures(int x, int y);
   void startGameThreads(void);
 
 public:

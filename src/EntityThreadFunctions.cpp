@@ -14,7 +14,7 @@ void *player(void *arg) {
   int x, y;
   y = state->boardState.size();
   x = state->boardState[0].size();
-  std::vector<int> &playerRow = board[y - 1];
+  std::vector<utils::Types::Element *> &playerRow = board[y - 1];
   pos = x / 2;
 
   while (true) {
@@ -35,10 +35,10 @@ void *player(void *arg) {
       }
     }
     if (newPos != pos && newPos > 0 && newPos < x) {
-      playerRow[pos] = 0;
+      playerRow[pos]->value = 0;
       pos = newPos;
     }
-    playerRow[pos] = utils::Types::EntityEnum::PLAYER;
+    playerRow[pos]->value = utils::Types::EntityEnum::PLAYER;
     usleep(INPUT_INTERVAL);
   }
 }

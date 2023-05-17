@@ -15,14 +15,18 @@ Game::Game(void) : state(new utils::Types::GameState), interface(InterfaceClient
     exit(1);
   }
 
-  state->boardState = std::vector<std::vector<int>>(y, std::vector<int>(x));
-  state->aliens = std::vector<utils::Types::Alien *>(utils::ENEMY_ROWS * utils::ENEMIES_PER_ROW);
+  constructGameStructures(x, y);
   utils::logStartupInf(state->boardState, d, a);
   startGameThreads();
 }
 
 Game::~Game(void) {
   interface.stop();
+  for (auto row : state->boardState) {
+    for (auto element : row) {
+      delete element;
+    }
+  }
   for (auto alien : state->aliens) {
     delete alien;
   }
@@ -30,6 +34,18 @@ Game::~Game(void) {
 }
 
 void Game::draw() { interface.update(state); }
+
+void Game::constructGameStructures(int x, int y) {
+  state->boardState = std::vector<std::vector<utils::Types::Element *>>();
+  state->aliens = std::vector<utils::Types::Alien *>(utils::ENEMY_ROWS * utils::ENEMIES_PER_ROW);
+
+  for (int i = 0; i < y; i++) {
+    state->boardState.push_back(vector<utils::Types::Element *>());
+    for (int j = 0; j < x; j++) {
+      state->boardState[i].push_back(new utils::Types::Element);
+    }
+  }
+}
 
 void Game::startGameThreads(void) {
   pthread_t playerThread;
@@ -48,7 +64,7 @@ void Game::startGameThreads(void) {
       alien->id = cnt;
       alien->pos = {i, horizontalPos};
       alien->alive = true;
-      state->boardState[i][horizontalPos + (i % utils::ENEMY_SPACING)] = utils::Types::EntityEnum::ENEMY;
+      state->boardState[i][horizontalPos + (i % utils::ENEMY_SPACING)]->value = utils::Types::EntityEnum::ENEMY;
 
       utils::Types::AlienProps *props = new utils::Types::AlienProps;
       props->state = state;
