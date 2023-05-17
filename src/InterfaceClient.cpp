@@ -2,7 +2,7 @@
 
 using namespace std;
 
-InterfaceClient::InterfaceClient(void) : SCALE(3), COLOR(has_colors()) {}
+InterfaceClient::InterfaceClient(void) : SCALE(utils::SCALE), COLOR(has_colors()) {}
 
 void InterfaceClient::start(void) {
   initscr();

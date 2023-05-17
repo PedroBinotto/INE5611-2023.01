@@ -5,7 +5,7 @@ namespace {
 void handleMissleLaunch(utils::Types::GameState *state) { utils::log(std::to_string(state->playerPosition)); }
 } // namespace
 
-void *player(void *arg) {
+void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fodase nao tem diferenca
   utils::Types::GameState *state = (utils::Types::GameState *)arg;
   utils::Types::Board &board = state->boardState;
   int &pos = state->playerPosition;
@@ -44,12 +44,34 @@ void *player(void *arg) {
 }
 
 void *alien(void *arg) {
+  int id;
+  utils::Types::GameState *state;
+  utils::Types::Alien *self;
+  std::pair<int, int> area;
+
   utils::Types::AlienProps *props = (utils::Types::AlienProps *)arg;
-  utils::Types::GameState *state = props->state;
-  int id = props->id;
+
+  state = props->state;
+  id = props->id;
+  self = state->aliens[id];
+  area = props->playableArea;
+
   delete props;
 
-  utils::log("id " + std::to_string(id));
+  while (true) { // TODO: mutex
+    auto pos = self->pos;
+    state->boardState[pos.first][pos.second]->value = 0;
+
+    if (!self->alive)
+      break;
+
+    std::pair<int, int> newPos = {pos.first, (pos.second + 1) % area.first};
+    state->aliens[id]->pos = {pos.first, newPos.second};
+    state->boardState[newPos.first][newPos.second]->value = utils::Types::EntityEnum::ENEMY;
+
+    usleep(utils::ENEMY_MOV_SPEED_FACT / state->difficulty);
+  }
+
   return NULL;
 }
 } // namespace EntityThreadFunctions

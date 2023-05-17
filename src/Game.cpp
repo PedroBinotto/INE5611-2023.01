@@ -2,8 +2,9 @@
 
 using namespace std;
 
-Game::Game(void) : state(new utils::Types::GameState), interface(InterfaceClient()) {
+Game::Game(int dif) : state(new utils::Types::GameState), interface(InterfaceClient()) {
   interface.start();
+  state->difficulty = dif;
   const pair<int, int> d = interface.getDimensions();
   const pair<int, int> a = interface.getPlayableArea();
   const int x = a.first;
@@ -11,7 +12,10 @@ Game::Game(void) : state(new utils::Types::GameState), interface(InterfaceClient
 
   if (x < utils::MIN_X || y < utils::MIN_Y) {
     interface.stop();
-    cout << "Terminal mto pequeno" << endl; // TODO: tratamenro definitivo
+    auto minxdef = utils::MIN_X * utils::SCALE;
+    auto minydef = utils::MIN_Y * utils::SCALE;
+    cout << "Seu terminal é muito pequeno para executar este programa. Definição mínima é de " << minxdef << " x "
+         << minydef << "." << endl; // TODO: tratamenro definitivo
     exit(1);
   }
 
@@ -68,6 +72,7 @@ void Game::startGameThreads(void) {
 
       utils::Types::AlienProps *props = new utils::Types::AlienProps;
       props->state = state;
+      props->playableArea = interface.getPlayableArea(); // TODO: optimize
       props->id = cnt;
 
       pthread_t thread;

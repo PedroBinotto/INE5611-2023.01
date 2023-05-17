@@ -11,31 +11,36 @@
 
 namespace utils {
 namespace Types {
-struct Element {
-  int value;
+struct CriticalResource {
   int readcount = 0;
   pthread_mutex_t writerMutex;
   sem_t readerSemaphore;
+};
+
+struct Element : CriticalResource {
+  int value;
+};
+
+struct Alien : CriticalResource {
+  int id;
+  std::pair<int, int> pos;
+  bool alive;
 };
 
 typedef std::vector<std::vector<Element *>> Board;
 
 enum EntityEnum { PLAYER = 1, ENEMY = 2, MISSILE = 3 };
 
-struct Alien {
-  int id;
-  std::pair<int, int> pos;
-  bool alive;
-};
-
 struct GameState {
   Board boardState;
   std::vector<Alien *> aliens;
   int playerPosition;
+  int difficulty;
 };
 
 struct AlienProps {
   GameState *state;
+  std::pair<int, int> playableArea;
   int id;
 };
 } // namespace Types
@@ -49,6 +54,8 @@ void logBoardState(Types::Board &board);
 const int ENEMY_ROWS = 2;
 const int ENEMIES_PER_ROW = 10;
 const int ENEMY_SPACING = 5;
+const int ENEMY_MOV_SPEED_FACT = 100000;
+const int SCALE = 3;
 const int MIN_X = (ENEMIES_PER_ROW * ENEMY_SPACING) + 1;
 const int MIN_Y = 5;
 } // namespace utils

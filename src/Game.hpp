@@ -24,7 +24,7 @@ class Game {
   void startGameThreads(void);
 
 public:
-  Game(void);
+  Game(int dif);
   ~Game(void);
 
   void draw(void);
