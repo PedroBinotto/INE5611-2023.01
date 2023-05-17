@@ -2,23 +2,15 @@
 
 using namespace std;
 
-Game::Game(int dif) : state(new utils::Types::GameState), interface(InterfaceClient()) {
+Game::Game(int diff) : state(new utils::Types::GameState), interface(InterfaceClient()) {
   interface.start();
-  state->difficulty = dif;
+  state->difficulty = diff;
   const pair<int, int> d = interface.getDimensions();
   const pair<int, int> a = interface.getPlayableArea();
   const int x = a.first;
   const int y = a.second;
 
-  if (x < utils::MIN_X || y < utils::MIN_Y) {
-    interface.stop();
-    auto minxdef = utils::MIN_X * utils::SCALE;
-    auto minydef = utils::MIN_Y * utils::SCALE;
-    cout << "Seu terminal é muito pequeno para executar este programa. Definição mínima é de " << minxdef << " x "
-         << minydef << "." << endl; // TODO: tratamenro definitivo
-    exit(1);
-  }
-
+  checkMinimumDimensions(x, y);
   constructGameStructures(x, y);
   utils::logStartupInf(state->boardState, d, a);
   startGameThreads();
@@ -38,6 +30,17 @@ Game::~Game(void) {
 }
 
 void Game::draw() { interface.update(state); }
+
+void Game::checkMinimumDimensions(int x, int y) {
+  if (x < utils::MIN_X || y < utils::MIN_Y) {
+    interface.stop();
+    auto minxdef = utils::MIN_X * utils::SCALE;
+    auto minydef = utils::MIN_Y * utils::SCALE;
+    cout << "Seu terminal é muito pequeno para executar este programa. Definição mínima é de " << minxdef << " x "
+         << minydef << "." << endl; // TODO: tratamenro definitivo
+    exit(1);
+  }
+}
 
 void Game::constructGameStructures(int x, int y) {
   state->boardState = std::vector<std::vector<utils::Types::Element *>>();

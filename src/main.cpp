@@ -3,13 +3,12 @@
 #include <unistd.h>
 
 #include "Game.hpp"
+#include "utils.hpp"
 
 using namespace std;
+using namespace utils;
 
 void mloop(function<void(void)> op);
-
-const int MOD = 1000;
-const int FR = 33;
 
 int main(void) {
   int d;
@@ -34,11 +33,11 @@ void mloop(function<void(void)> op) {
 
   while (true) {
     now = chrono::system_clock::now();
-    const int delta = (now - lastFrame).count() / MOD;
+    const int delta = (now - lastFrame).count() / FR_MODIFIER;
     lastFrame = now;
 
-    if (delta < (FR * MOD)) {
-      usleep((FR * MOD) - delta);
+    if (delta < (FR * FR_MODIFIER)) {
+      usleep((FR * FR_MODIFIER) - delta);
     }
 
     op();

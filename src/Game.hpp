@@ -20,11 +20,12 @@ class Game {
   utils::Types::GameState *state;
   InterfaceClient interface;
 
+  void checkMinimumDimensions(int x, int y);
   void constructGameStructures(int x, int y);
   void startGameThreads(void);
 
 public:
-  Game(int dif);
+  Game(int diff);
   ~Game(void);
 
   void draw(void);

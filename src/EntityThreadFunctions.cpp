@@ -10,7 +10,6 @@ void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fo
   utils::Types::Board &board = state->boardState;
   int &pos = state->playerPosition;
 
-  const int INPUT_INTERVAL = 20000;
   int x, y;
   y = state->boardState.size();
   x = state->boardState[0].size();
@@ -39,7 +38,7 @@ void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fo
       pos = newPos;
     }
     playerRow[pos]->value = utils::Types::EntityEnum::PLAYER;
-    usleep(INPUT_INTERVAL);
+    usleep(utils::INPUT_INTERVAL);
   }
 }
 
