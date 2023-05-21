@@ -12,9 +12,9 @@
 namespace utils {
 namespace Types {
 struct CriticalResource {
-  int readcount = 0;
-  pthread_mutex_t writerMutex;
-  sem_t readerSemaphore;
+  int readCount = 0;
+  int writeCount = 0;
+  sem_t readerSem, writerSem, readTrySem, resourceSem;
 };
 
 struct Element : CriticalResource {
@@ -50,6 +50,7 @@ void create_directory(const std::string &path);
 void log(const std::string &msg);
 void logStartupInf(Types::Board &board, std::pair<int, int> termDimensions, std::pair<int, int> playableArea);
 void logBoardState(Types::Board &board);
+void logAliens(Types::GameState *state);
 
 const int ENEMY_ROWS = 2;
 const int ENEMIES_PER_ROW = 10;

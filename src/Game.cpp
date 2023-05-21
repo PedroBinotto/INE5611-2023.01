@@ -49,7 +49,12 @@ void Game::constructGameStructures(int x, int y) {
   for (int i = 0; i < y; i++) {
     state->boardState.push_back(vector<utils::Types::Element *>());
     for (int j = 0; j < x; j++) {
-      state->boardState[i].push_back(new utils::Types::Element);
+      utils::Types::Element *el = new utils::Types::Element;
+      sem_init(&el->readerSem, 0, 1);
+      sem_init(&el->writerSem, 0, 1);
+      sem_init(&el->readTrySem, 0, 1);
+      sem_init(&el->resourceSem, 0, 1);
+      state->boardState[i].push_back(el);
     }
   }
 }
@@ -67,6 +72,10 @@ void Game::startGameThreads(void) {
 
       state->aliens[cnt] = new utils::Types::Alien;
       utils::Types::Alien *alien = state->aliens[cnt];
+      sem_init(&alien->resourceSem, 0, 1);
+      sem_init(&alien->writerSem, 0, 1);
+      sem_init(&alien->readTrySem, 0, 1);
+      sem_init(&alien->resourceSem, 0, 1);
 
       alien->id = cnt;
       alien->pos = {i, horizontalPos};
@@ -83,9 +92,5 @@ void Game::startGameThreads(void) {
 
       cnt++;
     }
-  }
-
-  for (auto alien : state->aliens) {
-    utils::log("alien " + to_string(alien->id) + " pos: " + to_string(alien->pos.second));
   }
 }

@@ -41,4 +41,14 @@ void logBoardState(utils::Types::Board &board) {
   utils::log("");
 }
 
+void logAliens(Types::GameState *state) {
+  for (auto alien : state->aliens) {
+    log("{");
+    log("id: " + to_string(alien->id));
+    log("x: " + to_string(alien->pos.second));
+    log("y: " + to_string(alien->pos.first));
+    log("}");
+  }
+}
+
 } // namespace utils
