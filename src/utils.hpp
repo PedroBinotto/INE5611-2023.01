@@ -18,14 +18,14 @@ namespace utils {
     };
 
     struct Element : CriticalResource {
-      int displayValue;
-      int entityId;
+      int displayValue = 0;
+      int entityId = 0;
     };
 
     struct Alien : CriticalResource {
-      int id;
-      std::pair<int, int> pos;
-      bool alive;
+      int id = 0;
+      std::pair<int, int> pos = {0, 0};
+      bool alive = true;
     };
 
     typedef std::vector<std::vector<Element *>> Board;

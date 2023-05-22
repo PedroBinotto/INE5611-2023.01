@@ -1,5 +1,4 @@
 #include "EntityThreadFunctions.hpp"
-#include <cmath>
 
 namespace EntityThreadFunctions {
   namespace Sync {
@@ -96,14 +95,18 @@ namespace EntityThreadFunctions {
           alive = self->alive;
           if (!alive)
             return;
-          y = (y + 1) % maxY;
-          Sync::autoWriteCSection(state->boardState[x][y], [&state, &self, x, y, id]() {
-            if (state->boardState[x][y]->displayValue == 0) {
-              state->boardState[x][y]->displayValue = utils::Types::EntityEnum::ENEMY;
-              self->pos = {x, y};
+          auto nextY = (y + 1) % maxY;
+          Sync::autoWriteCSection(state->boardState[x][nextY], [&state, &self, x, y, nextY, id]() {
+            if (state->boardState[x][nextY]->displayValue == 0) {
+              state->boardState[x][nextY]->displayValue = utils::Types::EntityEnum::ENEMY;
+              state->boardState[x][nextY]->entityId = id;
+              state->boardState[x][y]->entityId = 0;
+              self->pos = {x, nextY};
               return;
             }
-            state->boardState[x][y]->displayValue = 0;
+            state->boardState[x][nextY]->displayValue = 0;
+            state->boardState[x][nextY]->entityId = 0;
+            state->boardState[x][y]->displayValue = utils::Types::EntityEnum::ENEMY;
           });
         });
       });
