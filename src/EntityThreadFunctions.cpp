@@ -85,36 +85,33 @@ namespace EntityThreadFunctions {
 
     delete props;
 
-    int cnt = 0;
     while (true) {
       auto pos = self->pos;
       auto &board = state->boardState;
       auto x = pos.first;
       auto y = pos.second;
 
-      Sync::writerEnterCSection(board[x][y]);
-      auto el = state->boardState[x][y];
-      el->displayValue = 0;
-      Sync::writerEnterCSection(self);
-      if (!self->alive) {
-        alive = false;
-      } else {
-        auto newY = (y + 1) % maxY;
-        Sync::writerEnterCSection(state->boardState[x][newY]);
-        if (state->boardState[x][newY]->displayValue == 0) {
-          state->boardState[x][newY]->displayValue = utils::Types::EntityEnum::ENEMY;
-          state->aliens[id]->pos = {x, newY};
-        } else {
-          state->boardState[x][newY]->displayValue = 0;
-        }
-        Sync::writerExitCSection(state->boardState[x][newY]);
-      }
-      Sync::writerExitCSection(self);
-      Sync::writerExitCSection(board[x][y]);
+      Sync::autoWriteCSection(board[x][y], [&state, &self, &alive, &y, x, maxY, id]() {
+        state->boardState[x][y]->displayValue = 0;
+        Sync::autoWriteCSection(self, [&state, &self, &alive, &y, x, maxY, id]() {
+          alive = self->alive;
+          if (!alive) {
+            return;
+          }
+          y = (y + 1) % maxY;
+          Sync::autoWriteCSection(state->boardState[x][y], [&state, &self, x, y, id]() {
+            if (state->boardState[x][y]->displayValue == 0) {
+              state->boardState[x][y]->displayValue = utils::Types::EntityEnum::ENEMY;
+              self->pos = {x, y};
+              return;
+            }
+            state->boardState[x][y]->displayValue = 0;
+          });
+        });
+      });
       usleep(utils::ENEMY_MOV_SPEED_FACT / state->difficulty);
       if (!alive)
         break;
-      cnt++;
     }
 
     return NULL;

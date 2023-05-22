@@ -54,7 +54,7 @@ namespace utils {
   void logAliens(Types::GameState *state);
 
   const int ENEMY_ROWS = 4;
-  const int ENEMIES_PER_ROW = 7;
+  const int ENEMIES_PER_ROW = 5;
   const int ENEMY_SPACING = 6;
   const int ENEMY_MOV_SPEED_FACT = 100000;
   const int INPUT_INTERVAL = 20000;
