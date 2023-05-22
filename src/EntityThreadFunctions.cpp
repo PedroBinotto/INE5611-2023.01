@@ -53,10 +53,10 @@ void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fo
       }
     }
     if (newPos != pos && newPos > 0 && newPos < x) {
-      playerRow[pos]->value = 0;
+      playerRow[pos]->displayValue = 0;
       pos = newPos;
     }
-    playerRow[pos]->value = utils::Types::EntityEnum::PLAYER;
+    playerRow[pos]->displayValue = utils::Types::EntityEnum::PLAYER;
     usleep(utils::INPUT_INTERVAL);
   }
 }
@@ -74,24 +74,27 @@ void *alien(void *arg) {
   self = state->aliens[id];
   area = props->playableArea;
   bool alive = true;
+  auto maxY = area.first;
 
   delete props;
 
   while (true) {
     auto pos = self->pos;
     auto &board = state->boardState;
-    Sync::writeCSection(board[pos.first][pos.second], [&state, &alive, id, pos, area, self]() {
-      auto el = state->boardState[pos.first][pos.second];
-      el->value = 0;
-      Sync::writeCSection(self, [&self, &state, &alive, id, pos, area]() {
+    auto x = pos.first;
+    auto y = pos.second;
+    Sync::writeCSection(board[x][y], [&state, &alive, id, x, y, maxY, self]() {
+      auto el = state->boardState[x][y];
+      el->displayValue = 0;
+      Sync::writeCSection(self, [&self, &state, &alive, id, x, y, maxY]() {
         if (!self->alive) {
           alive = false;
           return;
         }
-        std::pair<int, int> newPos = {pos.first, (pos.second + 1) % area.first};
-        Sync::writeCSection(state->boardState[newPos.first][newPos.second], [&state, newPos, id, pos]() {
-          state->boardState[newPos.first][newPos.second]->value = utils::Types::EntityEnum::ENEMY;
-          state->aliens[id]->pos = {pos.first, newPos.second};
+        auto newY = (y + 1) % maxY;
+        Sync::writeCSection(state->boardState[x][newY], [&state, id, x, newY]() {
+          state->boardState[x][newY]->displayValue = utils::Types::EntityEnum::ENEMY;
+          state->aliens[id]->pos = {x, newY};
         });
         usleep(utils::ENEMY_MOV_SPEED_FACT / state->difficulty);
       });

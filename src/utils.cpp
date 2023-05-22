@@ -33,7 +33,7 @@ void logBoardState(utils::Types::Board &board) {
   for (int i = 0; i < (int)board.size(); i++) {
     string out = "[ ";
     for (int j = 0; j < (int)board[i].size(); j++) {
-      out += to_string(board[i][j]->value) + " ";
+      out += to_string(board[i][j]->displayValue) + " ";
     }
     out += "]";
     utils::log(out);

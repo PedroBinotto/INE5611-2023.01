@@ -18,7 +18,8 @@ struct CriticalResource {
 };
 
 struct Element : CriticalResource {
-  int value;
+  int displayValue;
+  int entityId;
 };
 
 struct Alien : CriticalResource {

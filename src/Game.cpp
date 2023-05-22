@@ -80,7 +80,7 @@ void Game::startGameThreads(void) {
       alien->id = cnt;
       alien->pos = {i, horizontalPos};
       alien->alive = true;
-      state->boardState[i][horizontalPos + (i % utils::ENEMY_SPACING)]->value = utils::Types::EntityEnum::ENEMY;
+      state->boardState[i][horizontalPos + (i % utils::ENEMY_SPACING)]->displayValue = utils::Types::EntityEnum::ENEMY;
 
       utils::Types::AlienProps *props = new utils::Types::AlienProps;
       props->state = state;
