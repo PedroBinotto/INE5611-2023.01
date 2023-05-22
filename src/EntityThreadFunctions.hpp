@@ -7,10 +7,12 @@
 #include "utils.hpp"
 
 namespace EntityThreadFunctions {
-namespace Sync {
-template <typename T> void writeCSection(T *criticalResource, std::function<void()> op);
-} // namespace Sync
-void *player(void *arg);
-void *missile(void *arg);
-void *alien(void *arg);
+  namespace Sync {
+    template <typename T> void writerEnterCSection(T *criticalResource);
+    template <typename T> void writerExitCSection(T *criticalResource);
+    template <typename T> void autoWriteCSection(T *criticalResource, std::function<void()> op);
+  } // namespace Sync
+  void *player(void *arg);
+  void *missile(void *arg);
+  void *alien(void *arg);
 } // namespace EntityThreadFunctions
