@@ -56,7 +56,6 @@ namespace EntityThreadFunctions {
           break;
         case ' ':
           handleMissleLaunch(state);
-          utils::logAliens(state);
         }
       }
       if (newPos != pos && newPos > 0 && newPos < x) {
@@ -95,9 +94,8 @@ namespace EntityThreadFunctions {
         state->boardState[x][y]->displayValue = 0;
         Sync::autoWriteCSection(self, [&state, &self, &alive, &y, x, maxY, id]() {
           alive = self->alive;
-          if (!alive) {
+          if (!alive)
             return;
-          }
           y = (y + 1) % maxY;
           Sync::autoWriteCSection(state->boardState[x][y], [&state, &self, x, y, id]() {
             if (state->boardState[x][y]->displayValue == 0) {
