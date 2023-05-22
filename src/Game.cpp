@@ -68,7 +68,8 @@ void Game::startGameThreads(void) {
   const int initialPosRowPadding = (interface.getPlayableArea().first - rowSpan) / 2;
   for (int i = 0; i < utils::ENEMY_ROWS; i++) {
     for (int j = 0; j < utils::ENEMIES_PER_ROW; j++) {
-      const int horizontalPos = (j * utils::ENEMY_SPACING) + initialPosRowPadding;
+      const int horizontalPos =
+          (j * utils::ENEMY_SPACING) + ((cnt % 2) * (utils::ENEMY_SPACING / 2)) + initialPosRowPadding;
 
       state->aliens[cnt] = new utils::Types::Alien;
       utils::Types::Alien *alien = state->aliens[cnt];

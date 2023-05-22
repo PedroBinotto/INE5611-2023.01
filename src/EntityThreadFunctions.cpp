@@ -1,4 +1,5 @@
 #include "EntityThreadFunctions.hpp"
+#include <cmath>
 
 namespace EntityThreadFunctions {
   namespace Sync {
@@ -84,6 +85,7 @@ namespace EntityThreadFunctions {
 
     delete props;
 
+    int cnt = 0;
     while (true) {
       auto pos = self->pos;
       auto &board = state->boardState;
@@ -99,9 +101,12 @@ namespace EntityThreadFunctions {
       } else {
         auto newY = (y + 1) % maxY;
         Sync::writerEnterCSection(state->boardState[x][newY]);
-        state->boardState[x][newY]->displayValue = utils::Types::EntityEnum::ENEMY;
-        state->boardState[x][newY]->displayValue = utils::Types::EntityEnum::ENEMY;
-        state->aliens[id]->pos = {x, newY};
+        if (state->boardState[x][newY]->displayValue == 0) {
+          state->boardState[x][newY]->displayValue = utils::Types::EntityEnum::ENEMY;
+          state->aliens[id]->pos = {x, newY};
+        } else {
+          state->boardState[x][newY]->displayValue = 0;
+        }
         Sync::writerExitCSection(state->boardState[x][newY]);
       }
       Sync::writerExitCSection(self);
@@ -109,6 +114,7 @@ namespace EntityThreadFunctions {
       usleep(utils::ENEMY_MOV_SPEED_FACT / state->difficulty);
       if (!alive)
         break;
+      cnt++;
     }
 
     return NULL;
