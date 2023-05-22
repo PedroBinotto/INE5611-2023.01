@@ -21,6 +21,7 @@ class Game {
   InterfaceClient interface;
 
   void checkMinimumDimensions(int x, int y);
+  void checkOverState(void);
   void constructGameStructures(int x, int y);
   void startGameThreads(void);
 
@@ -28,7 +29,7 @@ public:
   Game(int diff);
   ~Game(void);
 
-  void draw(void);
+  void update(void);
 };
 
 #endif

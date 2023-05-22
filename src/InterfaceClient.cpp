@@ -58,11 +58,33 @@ vector<string> InterfaceClient::getSprite(int e) {
   }
 }
 
-void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
-  const vector<string> sprite = getSprite(entity);
+void InterfaceClient::printBlock(pair<int, int> &pos, vector<string> &sprite) {
   for (int i = 0; i < (int)sprite.size(); i++) {
     mvprintw(pos.second + i, pos.first, sprite[i].c_str());
   }
+}
+
+void InterfaceClient::printTimer(utils::Types::GameState *state) {
+  map<int, std::pair<int, int>> positionMap{
+      {0, {0, 0}},
+      {1, {0, (playableArea.second - 2)}},
+      {2, {playableArea.first - 1, 0}},
+      {3, {playableArea.first - 1, playableArea.second - 2}},
+  };
+  pair<int, int> virtualPos = positionMap[utils::TIMER_POS];
+  pair<int, int> pos = virtualPositionToTerminalCoordinates(virtualPos);
+
+  ostringstream oss;
+  oss << internal << setfill('0') << setw(SCALE) << (utils::TIME_LIMIT - state->timePast);
+  string timeString = oss.str();
+  vector<string> clockSprite = {"   ", timeString, "   "};
+
+  printBlock(pos, clockSprite);
+}
+
+void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
+  vector<string> sprite = getSprite(entity);
+  printBlock(pos, sprite);
 }
 
 void InterfaceClient::draw(utils::Types::GameState *state) {
@@ -72,6 +94,7 @@ void InterfaceClient::draw(utils::Types::GameState *state) {
       printSprite(coords, state->boardState[i][j]->displayValue);
     }
   }
+  printTimer(state);
 }
 
 void InterfaceClient::stop(void) { endwin(); }

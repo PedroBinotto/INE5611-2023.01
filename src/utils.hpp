@@ -37,6 +37,8 @@ namespace utils {
       std::vector<Alien *> aliens;
       int playerPosition;
       int difficulty;
+      int timePast;
+      int over;
     };
 
     struct AlienProps {
@@ -57,12 +59,14 @@ namespace utils {
   const int ENEMIES_PER_ROW = 5;
   const int ENEMY_SPACING = 6;
   const int ENEMY_MOV_SPEED_FACT = 100000;
-  const int INPUT_INTERVAL = 20000;
+  const int INPUT_INTERVAL = 20000; // USECS
+  const int TIME_LIMIT = 90;        // SECS
   const int FR = 33;
   const int FR_MODIFIER = 1000;
   const int SCALE = 3;
   const int MIN_X = (ENEMIES_PER_ROW * ENEMY_SPACING) + 1;
   const int MIN_Y = 5;
+  const int TIMER_POS = 3; // 0 TOP LEFT ; 1 TOP RIGHT ; 2  BOTTOM LEFT ; 3 BOTTOM RIGHT
 } // namespace utils
 
 #endif

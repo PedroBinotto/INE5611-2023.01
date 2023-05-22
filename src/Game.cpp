@@ -29,7 +29,10 @@ Game::~Game(void) {
   delete state;
 }
 
-void Game::draw() { interface.update(state); }
+void Game::update() {
+  checkOverState();
+  interface.update(state);
+}
 
 void Game::checkMinimumDimensions(int x, int y) {
   if (x < utils::MIN_X || y < utils::MIN_Y) {
@@ -39,6 +42,19 @@ void Game::checkMinimumDimensions(int x, int y) {
     cout << "Seu terminal é muito pequeno para executar este programa. Definição mínima é de " << minxdef << " x "
          << minydef << "." << endl; // TODO: tratamenro definitivo
     exit(1);
+  }
+}
+
+void Game::checkOverState(void) { // TODO: definitivo
+  switch (state->over) {
+  case -1:
+    interface.stop();
+    cout << "PERDEU" << endl;
+    exit(1);
+  case 1:
+    interface.stop();
+    cout << "VENCEU" << endl;
+    exit(0);
   }
 }
 
@@ -95,4 +111,7 @@ void Game::startGameThreads(void) {
       cnt++;
     }
   }
+
+  pthread_t timerThread;
+  pthread_create(&timerThread, NULL, EntityThreadFunctions::timer, state);
 }

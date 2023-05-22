@@ -13,7 +13,7 @@ void mloop(function<void(void)> op);
 
 int main(void) {
   Game game = Game(getDifficultyLevel());
-  mloop([&game]() { game.draw(); });
+  mloop([&game]() { game.update(); });
 
   return 0;
 }

@@ -1,29 +1,55 @@
 #include "EntityThreadFunctions.hpp"
+#include <cmath>
 
 namespace EntityThreadFunctions {
   namespace Sync {
-    template <typename T> void writerEnterCSection(T *criticalResource) {
-      sem_wait(&criticalResource->writerSem);
-      criticalResource->writeCount++;
-      if (criticalResource->writeCount == 1)
-        sem_wait(&criticalResource->readTrySem);
-      sem_post(&criticalResource->writerSem);
-      sem_wait(&criticalResource->resourceSem);
+    void writerEnterCSection(utils::Types::CriticalResource *resource) {
+      sem_wait(&resource->writerSem);
+      resource->writeCount++;
+      if (resource->writeCount == 1)
+        sem_wait(&resource->readTrySem);
+      sem_post(&resource->writerSem);
+      sem_wait(&resource->resourceSem);
     }
 
-    template <typename T> void writerExitCSection(T *criticalResource) {
-      sem_post(&criticalResource->resourceSem);
-      sem_wait(&criticalResource->writerSem);
-      criticalResource->writeCount--;
-      if (criticalResource->writeCount == 0)
-        sem_post(&criticalResource->readTrySem);
-      sem_post(&criticalResource->writerSem);
+    void writerExitCSection(utils::Types::CriticalResource *resource) {
+      sem_post(&resource->resourceSem);
+      sem_wait(&resource->writerSem);
+      resource->writeCount--;
+      if (resource->writeCount == 0)
+        sem_post(&resource->readTrySem);
+      sem_post(&resource->writerSem);
     }
 
-    template <typename T> void autoWriteCSection(T *criticalResource, std::function<void(void)> op) {
-      writerEnterCSection(criticalResource);
+    void autoWriteCSection(utils::Types::CriticalResource *resource, std::function<void(void)> op) {
+      writerEnterCSection(resource);
       op();
-      writerExitCSection(criticalResource);
+      writerExitCSection(resource);
+    }
+
+    utils::Types::CriticalResource readerEnterCSection(utils::Types::CriticalResource *resource) {
+      sem_wait(&resource->readTrySem);
+      sem_wait(&resource->readerSem);
+      resource->readCount++;
+      if (resource->readCount == 1)
+        sem_wait(&resource->resourceSem);
+      sem_post(&resource->readerSem);
+      sem_post(&resource->readTrySem);
+      return *resource;
+    }
+
+    void readerExitCSection(utils::Types::CriticalResource *resource) {
+      sem_wait(&resource->readerSem);
+      resource->readCount--;
+      if (resource->readCount == 0)
+        sem_post(&resource->resourceSem);
+      sem_post(&resource->readerSem);
+    }
+
+    void autoReadCSection(utils::Types::CriticalResource *resource,
+                          std::function<void(utils::Types::CriticalResource resource)> op) {
+      op(readerEnterCSection(resource));
+      readerExitCSection(resource);
     }
   } // namespace Sync
   namespace {
@@ -119,4 +145,30 @@ namespace EntityThreadFunctions {
   }
 
   void *missile(void *arg) {}
+
+  void *missileGenerator(void *arg) {}
+
+  void *timer(void *arg) {
+    utils::Types::GameState *state = (utils::Types::GameState *)arg;
+    int timePast = 0;
+
+    while (true) {
+      int won = 1;
+      for (auto alien : state->aliens) {
+        if (alien->alive) {
+          won = 0;
+        }
+      }
+      if (timePast >= utils::TIME_LIMIT)
+        won = -1;
+      state->over = won;
+      if (state->over != 0)
+        break;
+      timePast++;
+      state->timePast = timePast;
+      sleep(1);
+    }
+
+    return NULL;
+  }
 } // namespace EntityThreadFunctions

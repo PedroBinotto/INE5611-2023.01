@@ -8,9 +8,14 @@
 
 namespace EntityThreadFunctions {
   namespace Sync {
-    template <typename T> void writerEnterCSection(T *criticalResource);
-    template <typename T> void writerExitCSection(T *criticalResource);
-    template <typename T> void autoWriteCSection(T *criticalResource, std::function<void()> op);
+    void writerEnterCSection(utils::Types::CriticalResource *resource);
+    void writerExitCSection(utils::Types::CriticalResource *resource);
+    void autoWriteCSection(utils::Types::CriticalResource *resource, std::function<void()> op);
+
+    utils::Types::CriticalResource readerEnterCSection(utils::Types::CriticalResource *resource);
+    void readerExitCSection(utils::Types::CriticalResource *resource);
+    void autoReadCSection(utils::Types::CriticalResource *resource,
+                          std::function<void(utils::Types::CriticalResource resource)> op);
   } // namespace Sync
   void *player(void *arg);
   void *missile(void *arg);
