@@ -46,6 +46,11 @@ namespace utils {
       std::pair<int, int> playableArea;
       int id;
     };
+
+    struct MissileProps {
+      GameState *state;
+      int playerPosX;
+    };
   } // namespace Types
 
   std::string currentUnixTime(void);
@@ -59,6 +64,7 @@ namespace utils {
   const int ENEMIES_PER_ROW = 5;
   const int ENEMY_SPACING = 6;
   const int ENEMY_MOV_SPEED_FACT = 100000;
+  const int MISSILE_MOV_SPEED_FACT = 62500;
   const int INPUT_INTERVAL = 20000; // USECS
   const int TIME_LIMIT = 90;        // SECS
   const int FR = 33;

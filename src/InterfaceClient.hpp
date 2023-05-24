@@ -29,7 +29,7 @@ public:
 
   void start(void);
   void stop(void);
-  void update(utils::Types::GameState *state);
+  void mainUpdate(utils::Types::GameState *state);
 
   std::pair<int, int> getDimensions(void);
   int getScaleFactor(void);

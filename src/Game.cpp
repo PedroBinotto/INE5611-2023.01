@@ -31,7 +31,7 @@ Game::~Game(void) {
 
 void Game::update() {
   checkOverState();
-  interface.update(state);
+  interface.mainUpdate(state);
 }
 
 void Game::checkMinimumDimensions(int x, int y) {

@@ -1,5 +1,9 @@
 #include "EntityThreadFunctions.hpp"
+#include "utils.hpp"
 #include <cmath>
+#include <pthread.h>
+#include <string>
+#include <utility>
 
 namespace EntityThreadFunctions {
   namespace Sync {
@@ -53,7 +57,10 @@ namespace EntityThreadFunctions {
     }
   } // namespace Sync
   namespace {
-    void handleMissleLaunch(utils::Types::GameState *state) { utils::log(std::to_string(state->playerPosition)); }
+    void handleMissleLaunch(utils::Types::MissileProps *props) {
+      pthread_t thread;
+      pthread_create(&thread, NULL, missile, props);
+    }
   }                         // namespace
   void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fodase nao tem diferenca
     utils::Types::GameState *state = (utils::Types::GameState *)arg;
@@ -80,7 +87,10 @@ namespace EntityThreadFunctions {
           newPos = pos - 1;
           break;
         case ' ':
-          handleMissleLaunch(state);
+          utils::Types::MissileProps *props = new utils::Types::MissileProps;
+          props->state = state;
+          props->playerPosX = pos;
+          handleMissleLaunch(props);
         }
       }
       if (newPos != pos && newPos > 0 && newPos < x) {
@@ -144,7 +154,39 @@ namespace EntityThreadFunctions {
     return NULL;
   }
 
-  void *missile(void *arg) {}
+  void *missile(void *arg) {
+    utils::Types::MissileProps *props = (utils::Types::MissileProps *)arg;
+    utils::Types::GameState *state = props->state;
+    std::pair<int, int> initialPos = {state->boardState.size() - 2, props->playerPosX};
+    int prev;
+
+    delete props;
+
+    for (int i = initialPos.first; i >= 0; i--) {
+      bool hit = false;
+
+      Sync::autoWriteCSection(state->boardState[prev][initialPos.second], [&state, prev, initialPos]() {
+        if (prev)
+          state->boardState[prev][initialPos.second]->displayValue = 0;
+      });
+      Sync::autoWriteCSection(state->boardState[i][initialPos.second], [&state, &hit, i, initialPos]() {
+        if (state->boardState[i][initialPos.second]->displayValue == 2) {
+          auto alien = state->aliens[state->boardState[i][initialPos.second]->entityId];
+          Sync::autoWriteCSection(alien, [&alien]() { alien->alive = false; });
+          hit = true;
+        }
+        state->boardState[i][initialPos.second]->displayValue = 3;
+        hit = false;
+      });
+      if (hit)
+        break;
+      prev = i;
+      usleep(utils::MISSILE_MOV_SPEED_FACT);
+    }
+    state->boardState[prev][initialPos.second]->displayValue = 0;
+
+    return NULL;
+  }
 
   void *missileGenerator(void *arg) {}
 
@@ -155,9 +197,8 @@ namespace EntityThreadFunctions {
     while (true) {
       int won = 1;
       for (auto alien : state->aliens) {
-        if (alien->alive) {
+        if (alien->alive)
           won = 0;
-        }
       }
       if (timePast >= utils::TIME_LIMIT)
         won = -1;

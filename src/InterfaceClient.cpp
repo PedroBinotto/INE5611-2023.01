@@ -21,7 +21,7 @@ void InterfaceClient::start(void) {
   }
 }
 
-void InterfaceClient::update(utils::Types::GameState *state) {
+void InterfaceClient::mainUpdate(utils::Types::GameState *state) {
   clear();
   draw(state);
   refresh();
