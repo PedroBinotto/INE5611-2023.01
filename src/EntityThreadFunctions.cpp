@@ -1,9 +1,4 @@
 #include "EntityThreadFunctions.hpp"
-#include "utils.hpp"
-#include <cmath>
-#include <pthread.h>
-#include <string>
-#include <utility>
 
 namespace EntityThreadFunctions {
   namespace Sync {
@@ -165,10 +160,11 @@ namespace EntityThreadFunctions {
     for (int i = initialPos.first; i >= 0; i--) {
       bool hit = false;
 
-      Sync::autoWriteCSection(state->boardState[prev][initialPos.second], [&state, prev, initialPos]() {
-        if (prev)
+      if (prev) {
+        Sync::autoWriteCSection(state->boardState[prev][initialPos.second], [&state, prev, initialPos]() {
           state->boardState[prev][initialPos.second]->displayValue = 0;
-      });
+        });
+      }
       Sync::autoWriteCSection(state->boardState[i][initialPos.second], [&state, &hit, i, initialPos]() {
         if (state->boardState[i][initialPos.second]->displayValue == 2) {
           auto alien = state->aliens[state->boardState[i][initialPos.second]->entityId];

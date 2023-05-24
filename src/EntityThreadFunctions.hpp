@@ -1,8 +1,10 @@
-#include <cmath>
 #include <functional>
 #include <ncurses.h>
+#include <pthread.h>
 #include <semaphore.h>
+#include <string>
 #include <unistd.h>
+#include <utility>
 
 #include "utils.hpp"
 
