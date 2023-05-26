@@ -52,9 +52,20 @@ namespace EntityThreadFunctions {
     }
   } // namespace Sync
   namespace {
-    void handleMissleLaunch(utils::Types::MissileProps *props) {
-      pthread_t thread;
-      pthread_create(&thread, NULL, missile, props);
+    void handleMissleLaunch(utils::Types::GameState *state, utils::Types::MissileProps *props) {
+      bool empty;
+      Sync::autoWriteCSection(state->battery, [&props, &state, &empty]() {
+        if (state->battery->n > 0) {
+          state->battery->n--;
+          empty = false;
+        } else {
+          empty = true;
+        }
+      });
+      if (!empty) {
+        pthread_t thread;
+        pthread_create(&thread, NULL, missile, props);
+      }
     }
   }                         // namespace
   void *player(void *arg) { // TODO: quem sabe usar mutex aqui mas sinceramente fodase nao tem diferenca
@@ -85,7 +96,7 @@ namespace EntityThreadFunctions {
           utils::Types::MissileProps *props = new utils::Types::MissileProps;
           props->state = state;
           props->playerPosX = pos;
-          handleMissleLaunch(props);
+          handleMissleLaunch(state, props);
         }
       }
       if (newPos != pos && newPos > 0 && newPos < x) {
@@ -184,7 +195,17 @@ namespace EntityThreadFunctions {
     return NULL;
   }
 
-  void *missileGenerator(void *arg) {}
+  void *missileGenerator(void *arg) {
+    utils::Types::GameState *state = (utils::Types::GameState *)arg;
+    while (true) {
+      Sync::autoWriteCSection(state->battery, [&state]() {
+        if (state->battery->n < utils::MAX_MISSILE_CAPACITY) {
+          state->battery->n++;
+        }
+      });
+      sleep(utils::MISSILE_GENERATOR_INTERVAL);
+    }
+  }
 
   void *timer(void *arg) {
     utils::Types::GameState *state = (utils::Types::GameState *)arg;

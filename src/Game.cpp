@@ -5,6 +5,11 @@ using namespace std;
 Game::Game(int diff) : state(new utils::Types::GameState), interface(InterfaceClient()) {
   interface.start();
   state->difficulty = diff;
+  state->battery = new utils::Types::MissileBattery;
+  sem_init(&state->battery->resourceSem, 0, 1);
+  sem_init(&state->battery->writerSem, 0, 1);
+  sem_init(&state->battery->readTrySem, 0, 1);
+  sem_init(&state->battery->resourceSem, 0, 1);
   const pair<int, int> d = interface.getDimensions();
   const pair<int, int> a = interface.getPlayableArea();
   const int x = a.first;
@@ -26,6 +31,7 @@ Game::~Game(void) {
   for (auto alien : state->aliens) {
     delete alien;
   }
+  delete state->battery;
   delete state;
 }
 
@@ -111,6 +117,8 @@ void Game::startGameThreads(void) {
       cnt++;
     }
   }
+  pthread_t generatorThread;
+  pthread_create(&generatorThread, NULL, EntityThreadFunctions::missileGenerator, state);
 
   pthread_t timerThread;
   pthread_create(&timerThread, NULL, EntityThreadFunctions::timer, state);

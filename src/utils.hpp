@@ -28,6 +28,10 @@ namespace utils {
       bool alive = true;
     };
 
+    struct MissileBattery : CriticalResource {
+      int n = 6;
+    };
+
     typedef std::vector<std::vector<Element *>> Board;
 
     enum EntityEnum { PLAYER = 1, ENEMY = 2, MISSILE = 3 };
@@ -35,6 +39,7 @@ namespace utils {
     struct GameState {
       Board boardState;
       std::vector<Alien *> aliens;
+      MissileBattery *battery;
       int playerPosition;
       int difficulty;
       int timePast;
@@ -65,14 +70,17 @@ namespace utils {
   const int ENEMY_SPACING = 6;
   const int ENEMY_MOV_SPEED_FACT = 100000;
   const int MISSILE_MOV_SPEED_FACT = 62500;
-  const int INPUT_INTERVAL = 20000; // USECS
-  const int TIME_LIMIT = 90;        // SECS
+  const int MAX_MISSILE_CAPACITY = 6;
+  const int MISSILE_GENERATOR_INTERVAL = 1; // SECS
+  const int INPUT_INTERVAL = 20000;         // USECS
+  const int TIME_LIMIT = 90;                // SECS
   const int FR = 33;
   const int FR_MODIFIER = 1000;
   const int SCALE = 3;
   const int MIN_X = (ENEMIES_PER_ROW * ENEMY_SPACING) + 1;
   const int MIN_Y = 5;
   const int TIMER_POS = 3; // 0 TOP LEFT ; 1 TOP RIGHT ; 2  BOTTOM LEFT ; 3 BOTTOM RIGHT
+  const int AMMO_COUNTER_POS = 0;
 } // namespace utils
 
 #endif

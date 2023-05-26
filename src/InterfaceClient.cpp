@@ -82,6 +82,20 @@ void InterfaceClient::printTimer(utils::Types::GameState *state) {
   printBlock(pos, clockSprite);
 }
 
+void InterfaceClient::printMissileBattery(utils::Types::GameState *state) {
+  map<int, std::pair<int, int>> positionMap{
+      {0, {0, 0}},
+      {1, {0, (playableArea.second - 2)}},
+      {2, {playableArea.first - 1, 0}},
+      {3, {playableArea.first - 1, playableArea.second - 2}},
+  };
+  pair<int, int> virtualPos = positionMap[utils::AMMO_COUNTER_POS];
+  pair<int, int> pos = virtualPositionToTerminalCoordinates(virtualPos);
+  vector<string> counterSprite = {"   ", "  " + to_string(state->battery->n), "   "};
+
+  printBlock(pos, counterSprite);
+}
+
 void InterfaceClient::printSprite(pair<int, int> pos, int entity) {
   vector<string> sprite = getSprite(entity);
   printBlock(pos, sprite);
@@ -95,6 +109,7 @@ void InterfaceClient::draw(utils::Types::GameState *state) {
     }
   }
   printTimer(state);
+  printMissileBattery(state);
 }
 
 void InterfaceClient::stop(void) { endwin(); }

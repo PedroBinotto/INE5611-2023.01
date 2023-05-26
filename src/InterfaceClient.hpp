@@ -21,6 +21,7 @@ class InterfaceClient {
   void printBlock(std::pair<int, int> &pos, std::vector<std::string> &sprite);
   void printSprite(std::pair<int, int> pos, int entity);
   void printTimer(utils::Types::GameState *state);
+  void printMissileBattery(utils::Types::GameState *state);
   std::vector<std::string> getSprite(int e);
   std::pair<int, int> virtualPositionToTerminalCoordinates(std::pair<int, int> pos);
 
