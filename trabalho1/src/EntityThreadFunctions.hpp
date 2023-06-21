@@ -1,3 +1,6 @@
+#ifndef __ENTITY_H__
+#define __ENTITY_H__
+
 #include <functional>
 #include <ncurses.h>
 #include <pthread.h>
@@ -25,3 +28,5 @@ namespace EntityThreadFunctions {
   void *timer(void *arg);
   void *missileGenerator(void *arg);
 } // namespace EntityThreadFunctions
+
+#endif
