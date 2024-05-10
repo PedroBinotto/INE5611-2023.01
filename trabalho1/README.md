@@ -1,4 +1,4 @@
-# Trabalho 1 - Space Invadors
+# Trabalho 1 - Space Invaders
 
 Este projeto utiliza as libs estáticas `pthreads` e `ncurses`
 
