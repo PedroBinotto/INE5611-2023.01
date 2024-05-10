@@ -1,6 +1,7 @@
 # Define compiler and compiler flags
 CXX := g++
-CXXFLAGS := -std=c++11 -Wall -Wextra -g -pedantic -lncurses -pthread
+CXXFLAGS := -std=c++11 -Wall -Wextra -g -pedantic
+LIBFLAGS := -lncurses -pthread
 
 # Define source, object, and binary directories
 SRCDIR := src
@@ -24,12 +25,12 @@ all: $(TARGET)
 # Compile object files
 $(OBJDIR)/%.o: $(SRCDIR)/%.cpp
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) $(LIBFLAGS) -c $< -o $@
 
 # Link object files to create the binary file
 $(TARGET): $(OBJS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $^ -o $@
+	$(CXX) $(CXXFLAGS) $(LIBFLAGS) $^ -o $@ $(LIBFLAGS)
 
 # Clean up object and binary files
 clean:
