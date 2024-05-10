@@ -14,3 +14,5 @@ Para executar:
 ```bash
 ./bin/game
 ```
+
+[![asciicast](https://asciinema.org/a/Z5IzjEahoQluYGkehSaszQEDN.svg)](https://asciinema.org/a/Z5IzjEahoQluYGkehSaszQEDN)
