@@ -1,6 +1,6 @@
 # Trabalho 1 - Space Invaders
 
-Este projeto utiliza as libs estáticas `pthreads` e `ncurses`
+Este projeto utiliza as libs estáticas `pthreads` e `ncurses`.
 
 Para compilar:
 
