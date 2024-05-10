@@ -1,1 +1,16 @@
-# INE5611-2023.01
+# Trabalho 1 - Space Invadors
+
+Este projeto utiliza as libs estáticas `pthreads` e `ncurses`
+
+Para compilar:
+
+```bash
+# "make clean" caso queira limpar o projeto dos artefatos de uma compilação anterior;
+make
+```
+
+Para executar:
+
+```bash
+./bin/game
+```
